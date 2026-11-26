@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>お祭りカレンダー｜お祭り.net アプリ</title>
+<meta name="description" content="全国のお祭りを近い順に。あと何日か、開催中かがひと目でわかり、スマホのカレンダーに追加できます。日程は主催者・自治体の公式発表で確かめたものだけ。">
+<meta name="robots" content="noindex,follow">
+<meta name="theme-color" content="#b02026">
+<link rel="manifest" href="/app/manifest.webmanifest">
+<link rel="icon" href="/app/icon-192.png">
+<link rel="apple-touch-icon" href="/app/icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="お祭りカレンダー">
+<style>
+:root{--red:#b02026;--gold:#fad678;--ink:#222;--sub:#666;--bg:#fbf7f0;--card:#fff;--line:#e8dfd2}
+*{box-sizing:border-box}
+body{margin:0;font-family:system-ui,-apple-system,"Hiragino Sans","Noto Sans JP",sans-serif;background:var(--bg);color:var(--ink);-webkit-text-size-adjust:100%}
+header{position:sticky;top:0;z-index:5;background:var(--red);color:#fff;padding:calc(env(safe-area-inset-top) + 10px) 14px 10px;box-shadow:0 2px 6px rgba(0,0,0,.15)}
+header .row{display:flex;align-items:center;gap:10px;max-width:760px;margin:0 auto}
+header img{width:32px;height:32px;border-radius:8px}
+header h1{font-size:1.1rem;margin:0;flex:1}
+header a{color:#fff;font-size:.8rem;text-decoration:none;border:1px solid rgba(255,255,255,.6);border-radius:999px;padding:4px 10px}
+main{max-width:760px;margin:0 auto;padding:12px 12px 90px}
+.hero{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px;margin-bottom:12px}
+.hero .lab{font-size:.8rem;color:var(--red);font-weight:700}
+.hero .big{font-size:2.2rem;font-weight:800;line-height:1.1;margin:4px 0}
+.hero .big small{font-size:1rem;font-weight:600;color:var(--sub)}
+.hero .nm{font-size:1.15rem;font-weight:700}
+.filters{display:flex;gap:6px;overflow-x:auto;padding:2px 0 8px;scrollbar-width:none}
+.filters::-webkit-scrollbar{display:none}
+.chip{flex:none;border:1px solid var(--line);background:#fff;border-radius:999px;padding:6px 12px;font-size:.85rem;color:var(--ink);cursor:pointer}
+.chip.on{background:var(--red);border-color:var(--red);color:#fff}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px;margin:10px 0;position:relative}
+.card.now{border-color:var(--red);box-shadow:0 0 0 2px rgba(176,32,38,.15)}
+.card.past{opacity:.55}
+.badge{display:inline-block;font-size:.75rem;font-weight:700;border-radius:999px;padding:2px 9px;background:#f3e9da;color:#7a5a1d}
+.badge.now{background:var(--red);color:#fff}
+.badge.soon{background:#fde7c1;color:#8a4b00}
+.card h2{font-size:1.05rem;margin:6px 0 2px}
+.card .meta{font-size:.82rem;color:var(--sub)}
+.card .hl{font-size:.88rem;margin:6px 0 8px}
+.acts{display:flex;gap:6px;flex-wrap:wrap}
+.acts a,.acts button{font-size:.8rem;border:1px solid var(--line);background:#fff;border-radius:8px;padding:6px 10px;color:var(--ink);text-decoration:none;cursor:pointer}
+.acts .main{background:var(--red);color:#fff;border-color:var(--red)}
+.star{position:absolute;top:10px;right:10px;border:none;background:none;font-size:1.4rem;cursor:pointer;color:#ccb98f}
+.star.on{color:#e0a100}
+.empty{color:var(--sub);text-align:center;padding:30px 0}
+.note{font-size:.75rem;color:var(--sub);line-height:1.6;margin-top:16px}
+.install{position:fixed;left:12px;right:12px;bottom:calc(env(safe-area-inset-bottom) + 12px);max-width:736px;margin:0 auto;background:#222;color:#fff;border-radius:12px;padding:10px 12px;display:none;align-items:center;gap:10px;font-size:.85rem;z-index:9}
+.install button{background:var(--gold);border:none;border-radius:8px;padding:7px 12px;font-weight:700}
+.install .x{background:none;color:#aaa;padding:4px}
+</style>
+</head>
+<body>
+<header><div class="row"><img src="/app/icon-192.png" alt=""><h1>お祭りカレンダー</h1><a href="/">お祭り.net</a></div></header>
+<main>
+  <section class="hero" id="hero" hidden></section>
+  <div class="filters" id="fMonth"></div>
+  <div class="filters" id="fPref"></div>
+  <div id="list"><p class="empty">読み込んでいます…</p></div>
+  <p class="note">日程は、主催者・自治体・観光協会などの公式発表で確かめたものだけを載せています。天候などで変わることがあるため、お出かけの前に各ガイドページと公式ページで最新の情報を確かめてください。お祭り.net は個人運営の非公式サイトです。<br><span id="upd"></span></p>
+</main>
+<div class="install" id="inst"><span style="flex:1">ホーム画面に追加すると、アプリのように開けます</span><button id="instBtn">追加</button><button class="x" id="instX">✕</button></div>
+<script>
+(function(){
+  var SITE = "https://xn--t8j0g025t.net";
+  var state = { month: "all", pref: "all", fav: false, past: false };
+  var favs = {};
+  try { favs = JSON.parse(localStorage.getItem("omatsuri-favs") || "{}"); } catch (e) { favs = {}; }
+  function saveFavs(){ try { localStorage.setItem("omatsuri-favs", JSON.stringify(favs)); } catch (e) {} }
+  function esc(s){ return String(s).replace(/[&<>"']/g, function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c]; }); }
+  function today(){ var d = new Date(); return new Date(d.getFullYear(), d.getMonth(), d.getDate()); }
+  function pd(s){ var p = s.split("-"); return new Date(+p[0], +p[1] - 1, +p[2]); }
+  function days(a, b){ return Math.round((b - a) / 86400000); }
+  function status(it){
+    var t = today(), s = pd(it.start), e = pd(it.end);
+    if (t >= s && t <= e) return { k: "now", txt: "開催中", n: 0 };
+    if (t > e) return { k: "past", txt: "終了", n: -1 };
+    var n = days(t, s);
+    return { k: n <= 7 ? "soon" : "", txt: n === 1 ? "あした" : "あと" + n + "日", n: n };
+  }
+  function ics(it){
+    var s = it.start.replace(/-/g, ""), e = new Date(pd(it.end).getTime() + 86400000);
+    var ee = e.getFullYear() + ("0" + (e.getMonth() + 1)).slice(-2) + ("0" + e.getDate()).slice(-2);
+    var url = it.url.indexOf("/") === 0 ? SITE + it.url : it.url;
+    var body = ["BEGIN:VCALENDAR","VERSION:2.0","PRODID:-//omatsuri.net//app//JA","BEGIN:VEVENT",
+      "UID:" + s + "-" + encodeURIComponent(it.name).slice(0, 40) + "@omatsuri-net",
+      "DTSTAMP:" + new Date().toISOString().replace(/[-:]/g, "").slice(0, 15) + "Z",
+      "DTSTART;VALUE=DATE:" + s, "DTEND;VALUE=DATE:" + ee,
+      "SUMMARY:" + it.name, "LOCATION:" + it.pref + " " + it.place,
+      "DESCRIPTION:" + it.highlight + "\\n" + url + "\\n※お出かけ前に公式の最新情報を確認してください", "URL:" + url,
+      "END:VEVENT","END:VCALENDAR"].join("\r\n");
+    return "data:text/calendar;charset=utf-8," + encodeURIComponent(body);
+  }
+  var DATA = [];
+  function chips(el, opts, key){
+    el.innerHTML = opts.map(function(o){ return '<button class="chip' + (state[key] === o[0] ? " on" : "") + '" data-v="' + esc(o[0]) + '">' + esc(o[1]) + "</button>"; }).join("");
+    Array.prototype.forEach.call(el.children, function(b){ b.onclick = function(){ state[key] = b.getAttribute("data-v"); render(); }; });
+  }
+  function render(){
+    var months = [], prefs = [];
+    DATA.forEach(function(it){ var m = it.start.slice(0, 7); if (months.indexOf(m) < 0) months.push(m); if (prefs.indexOf(it.pref) < 0) prefs.push(it.pref); });
+    chips(document.getElementById("fMonth"), [["all","すべての月"],["fav","★ 行きたい"],["past","終わったお祭りも"]].concat(months.map(function(m){ return [m, +m.slice(0,4) + "年" + (+m.slice(5)) + "月"]; })).map(function(o){ return o; }), "month");
+    chips(document.getElementById("fPref"), [["all","すべての地域"]].concat(prefs.map(function(p){ return [p, p]; })), "pref");
+    var list = DATA.filter(function(it){
+      var st = status(it);
+      if (state.month === "past") return st.k === "past";
+      if (st.k === "past") return false;
+      if (state.month === "fav") return !!favs[it.start + it.name];
+      if (state.month !== "all" && it.start.slice(0, 7) !== state.month) return false;
+      return state.pref === "all" || it.pref === state.pref;
+    }).filter(function(it){ return state.pref === "all" || it.pref === state.pref; });
+    var up = DATA.filter(function(it){ return status(it).k !== "past"; });
+    var h = document.getElementById("hero");
+    if (up.length) {
+      var f = up[0], st = status(f);
+      h.hidden = false;
+      h.innerHTML = '<div class="lab">' + (st.k === "now" ? "いま開催中" : "次のお祭り") + '</div><div class="big">' +
+        (st.k === "now" ? "開催中" : st.n === 1 ? "あした" : "あと" + st.n + "<small> 日</small>") +
+        '</div><div class="nm">' + esc(f.name) + '</div><div class="meta">' + esc(f.dateText) + "・" + esc(f.pref) + " " + esc(f.place) + "</div>";
+    } else { h.hidden = true; }
+    var L = document.getElementById("list");
+    if (!list.length) { L.innerHTML = '<p class="empty">' + (state.month === "fav" ? "★を付けたお祭りはまだありません。" : "あてはまるお祭りはありません。") + "</p>"; return; }
+    L.innerHTML = list.map(function(it){
+      var st = status(it), key = it.start + it.name, url = it.url.indexOf("/") === 0 ? it.url : it.url;
+      return '<article class="card ' + st.k + '"><button class="star' + (favs[key] ? " on" : "") + '" data-k="' + esc(key) + '" aria-label="行きたいに追加">★</button>' +
+        '<span class="badge ' + st.k + '">' + st.txt + '</span><h2>' + esc(it.name) + '</h2>' +
+        '<div class="meta">' + esc(it.dateText) + '<br>' + esc(it.pref) + "・" + esc(it.place) + '</div>' +
+        '<p class="hl">' + esc(it.highlight) + '</p><div class="acts">' +
+        '<a class="main" href="' + esc(url) + '">ガイドを読む</a>' +
+        (st.k !== "past" ? '<a href="' + ics(it) + '" download="' + esc(it.name) + '.ics">カレンダーに追加</a>' : "") +
+        '<button data-share="' + esc(key) + '">共有</button></div></article>';
+    }).join("");
+    Array.prototype.forEach.call(L.querySelectorAll(".star"), function(b){ b.onclick = function(){ var k = b.getAttribute("data-k"); if (favs[k]) delete favs[k]; else favs[k] = 1; saveFavs(); render(); }; });
+    Array.prototype.forEach.call(L.querySelectorAll("[data-share]"), function(b){ b.onclick = function(){
+      var it = DATA.filter(function(x){ return x.start + x.name === b.getAttribute("data-share"); })[0];
+      var u = it.url.indexOf("/") === 0 ? SITE + it.url : it.url, t = it.name + "（" + it.dateText + "）";
+      if (navigator.share) navigator.share({ title: t, url: u }).catch(function(){});
+      else if (navigator.clipboard) navigator.clipboard.writeText(t + " " + u).then(function(){ b.textContent = "コピーしました"; });
+    }; });
+  }
+  fetch("/app/festivals.json", { cache: "no-cache" }).then(function(r){ return r.json(); }).then(function(j){
+    DATA = j.items || [];
+    document.getElementById("upd").textContent = "データ更新日：" + j.updated;
+    render();
+  }).catch(function(){ document.getElementById("list").innerHTML = '<p class="empty">データを読み込めませんでした。電波のよいところでもう一度開いてください。</p>'; });
+  if ("serviceWorker" in navigator) navigator.serviceWorker.register("/app/sw.js", { scope: "/app/" }).catch(function(){});
+  var dp = null, inst = document.getElementById("inst");
+  window.addEventListener("beforeinstallprompt", function(e){
+    e.preventDefault(); dp = e;
+    var hid = false; try { hid = localStorage.getItem("omatsuri-inst-x") === "1"; } catch (x) {}
+    if (!hid) inst.style.display = "flex";
+  });
+  document.getElementById("instBtn").onclick = function(){ if (dp) { dp.prompt(); dp = null; } inst.style.display = "none"; };
+  document.getElementById("instX").onclick = function(){ inst.style.display = "none"; try { localStorage.setItem("omatsuri-inst-x", "1"); } catch (x) {} };
+})();
+</script>
+</body>
+</html>

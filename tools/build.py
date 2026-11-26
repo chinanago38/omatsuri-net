@@ -8,7 +8,7 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DOMAIN = "https://xn--t8j0g025t.net"
 CSS_VER = "20261126a"
 AD = '<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1061443138303693" crossorigin="anonymous"></script>'
-NAV = [("お祭りカレンダー", "/calendar/"), ("お祭りガイド", "/matsuri/")]
+NAV = [("お祭りカレンダー", "/calendar/"), ("お祭りガイド", "/matsuri/"), ("アプリ", "/app/")]
 SECTION_NAME = {"matsuri": ("お祭りガイド", "/matsuri/")}
 
 def esc(s): return html.escape(s, quote=True)
@@ -477,6 +477,8 @@ def main():
     open(os.path.join(ROOT, "sitemap.xml"), "w").write("\n".join(sm) + "\n")
     open(os.path.join(ROOT, "robots.txt"), "w").write(f"User-agent: *\nAllow: /\nSitemap: {DOMAIN}/sitemap.xml\n")
     print("pages", len(urls))
+    import subprocess, sys
+    subprocess.run([sys.executable, os.path.join(ROOT, "tools", "make_app.py")], check=True)
 
 if __name__ == "__main__":
     main()

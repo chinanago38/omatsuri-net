@@ -1,0 +1,15 @@
+{
+ "name": "お祭りカレンダー（お祭り.net）",
+ "short_name": "お祭りカレンダー",
+ "description": "全国のお祭りを近い順に。あと何日か、開催中かがひと目でわかります。",
+ "start_url": "/app/",
+ "scope": "/app/",
+ "display": "standalone",
+ "background_color": "#fbf7f0",
+ "theme_color": "#b02026",
+ "lang": "ja",
+ "icons": [
+  {"src": "/app/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable"},
+  {"src": "/app/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable"}
+ ]
+}

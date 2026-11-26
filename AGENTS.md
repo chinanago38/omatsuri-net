@@ -17,3 +17,8 @@ GitHub Pages で公開する静的サイト。tools/build.py が tools/content/*
 - 確かめられない数字・日付は書かない。資料で違うときはそのことを書く
 - 1ページ本文3,000文字以上（トップ・一覧・カレンダー・規約ページを除く。一覧はお祭りが増えれば自然に長くなる）。使い回し・数合わせのページは作らない
 - 公式サイトと誤解されない書き方（個人運営・非公式）
+
+## アプリ（/app/、お祭りカレンダー PWA）
+- app/index.html・manifest.webmanifest・sw.js・アイコンは手書きの静的ファイル。app/festivals.json は tools/make_app.py が calendar.html の表から作る（build.py の最後で自動実行）
+- お祭りを足すときは calendar.html の表に行を足せば、サイトとアプリの両方に出る
+- /app/ は一覧だけの画面なので noindex（サイトマップにも入れない）。画面を変えたら sw.js の CACHE 名の番号を上げる
