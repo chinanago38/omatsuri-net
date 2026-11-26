@@ -7,7 +7,7 @@ import json, os, re, time, urllib.parse, urllib.request
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 UA = {"User-Agent": "omatsuri-net-photo-bot/1.0 (https://xn--t8j0g025t.net/; info@chinanago.jp)"}
-AVOID = ["map", "centipede", "danish", "aquarium", "kiha", "hirokoji", "banner", "copenhagen", "%e6%9c%9d%e9%a3%9f", "地図", "logo", "icon", "svg", "flag", "diagram", "chart", "emblem", "insignia", "ensign", "seal",
+AVOID = ["map", "centipede", "danish", "aquarium", "kiha", "hirokoji", "banner", "copenhagen", "朝食", "地図", "logo", "icon", "svg", "flag", "diagram", "chart", "emblem", "insignia", "ensign", "seal",
          "patch", "badge", "crest", "plan", "drawing", "model", "模型", "stamp", "postcard", "interior", "crew", 
          "memorial", "bridge of", "galley", "uniform"]
 ANGLES = [("前から", ["bow", "front", "head on", "head-on", "艦首", "前方", "正面"]),
