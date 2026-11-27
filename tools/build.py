@@ -266,7 +266,7 @@ def top_hero(body):
     n = max(0, len(glob.glob(os.path.join(ROOT, "tools", "content", "matsuri__*.html"))) - 1)
     st = f'<a class="stat" href="/matsuri/"><b>{n}</b><small>お祭りガイド</small></a>'
     return (f'<section class="tophero"{bg}><div class="inner"><p class="kicker">全国のお祭り 日程・見どころガイド</p>'
-            f'<h1>次のお祭りは<br>いつ・どこで？</h1><p class="lead">全国のお祭りの日程と見どころを、主催者・自治体・観光協会の公式発表から集めています。個人運営の非公式ガイドです。</p>'
+            f'<h1>次のお祭りは<br>いつ・どこで？</h1><p class="lead">全国のお祭りの日程と見どころを、主催者・自治体・観光協会の公式発表から集めています。</p>'
             f'<div class="stats">{st}</div><div class="cta"><a class="btn" href="/calendar/">お祭りカレンダー</a><a class="btn ghost" href="/matsuri/">お祭りガイド</a></div></div>{credit}</section>\n')
 
 def next_events():
@@ -448,7 +448,7 @@ def render(url, title, desc, body):
 {main}</div></main>
 
 <footer class="site"><div class="wrap">
-  <p>お祭り.net は、全国のお祭りの日程と見どころを公式情報からまとめた個人運営の情報サイトです。各お祭りの主催者・自治体・観光協会の公式サイトではありません。</p>
+  <p>お祭り.net は、全国のお祭りの日程と見どころを公式情報からまとめた情報サイトです。各お祭りの主催者・自治体・観光協会とは関係のない、ちんあなご編集部のサイトです。</p>
   <p>{" ・ ".join(f'<a href="{u}">{t}</a>' for t, u in [("トップ", "/")] + NAV)}</p>
   <p><a href="/operator/">運営者情報</a> ・ <a href="/editorial-policy/">編集方針</a> ・ <a href="/contact/">お問い合わせ</a> ・ <a href="/privacy/">プライバシーポリシー</a> ・ <a href="/disclaimer/">免責事項</a></p>
   <p>© 2026 お祭り.net</p>
