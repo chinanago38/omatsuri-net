@@ -229,3 +229,8 @@ ol.steps li::before{content:counter(st);position:absolute;left:12px;top:10px;wid
 .faq details{border:1px solid #d8e4f0;border-radius:12px;padding:10px 14px;margin:0 0 10px;background:#fff}
 .faq summary{font-weight:700;cursor:pointer}
 .faq details p{margin:8px 0 0}
+/* フッターの右端のちんあなごマーク（2026-11-29） */
+footer.site .foot{display:flex;align-items:flex-end;gap:16px}
+footer.site .ft{flex:1;min-width:0}
+footer.site .mark{flex:none;width:80px;height:80px;display:block;filter:drop-shadow(0 0 1px #fff) drop-shadow(0 0 1px #fff)}
+@media(max-width:640px){footer.site .mark{width:64px;height:64px}}

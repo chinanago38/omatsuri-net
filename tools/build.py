@@ -6,7 +6,7 @@ import glob, html, os, re, datetime
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DOMAIN = "https://xn--t8j0g025t.net"
-CSS_VER = "20261127i"
+CSS_VER = "20261129a"
 AD = '<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1061443138303693" crossorigin="anonymous"></script>'
 NAV = [("お祭りカレンダー", "/calendar/"), ("お祭りガイド", "/matsuri/"), ("アプリ", "/app/")]
 SECTION_NAME = {"matsuri": ("お祭りガイド", "/matsuri/")}
@@ -475,12 +475,12 @@ def render(url, title, desc, body):
 <main><div class="wrap">
 {main}</div></main>
 
-<footer class="site"><div class="wrap">
+<footer class="site"><div class="wrap foot"><div class="ft">
   <p>お祭り.net は、全国のお祭りの日程と見どころを公式情報からまとめた情報サイトです。各お祭りの主催者・自治体・観光協会とは関係のない、ちんあなご編集部のサイトです。</p>
   <p>{" ・ ".join(f'<a href="{u}">{t}</a>' for t, u in [("トップ", "/")] + NAV)}</p>
   <p><a href="/operator/">運営者情報</a> ・ <a href="/editorial-policy/">編集方針</a> ・ <a href="/contact/">お問い合わせ</a> ・ <a href="/privacy/">プライバシーポリシー</a> ・ <a href="/disclaimer/">免責事項</a></p>
   <p>© 2026 お祭り.net</p>
-</div></footer>
+</div><img class="mark" src="/assets/chinanago-mark.webp" width="80" height="80" alt="ちんあなご編集部のマーク" loading="lazy" decoding="async"></div></footer>
 </body>
 </html>
 """
